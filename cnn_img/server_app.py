@@ -78,11 +78,13 @@ def server_fn(context: Context):
         fraction_evaluate=0.5,
         min_available_clients=2,
         initial_parameters=parameters,
+        # proximal_mu=0.1,
         on_fit_config_fn=on_fit_config,
         evaluate_fn=gen_evaluate_fn(
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
+
     )
 
     config = ServerConfig(num_rounds=num_rounds)

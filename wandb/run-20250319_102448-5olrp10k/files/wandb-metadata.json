@@ -1,0 +1,174 @@
+{
+    "os": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+    "python": "3.12.9",
+    "heartbeatAt": "2025-03-19T03:24:49.408568",
+    "startedAt": "2025-03-19T03:24:48.749958",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--app",
+        ".",
+        "--num-supernodes",
+        "50",
+        "--backend-config",
+        "{\"client-resources\": {\"num-cpus\": 4, \"num-gpus\": 1.0}}"
+    ],
+    "state": "running",
+    "program": "/home/khanhsv/miniconda3/envs/FL/bin/flower-simulation",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/khanh22010449/CNN_FOR_IMG.git",
+        "commit": "3cb46ece03396cb74a40c952828a2aef681066fe"
+    },
+    "email": "22010449@st.phenikaa-uni.edu.vn",
+    "root": "/home/khanhsv/FL/FL/cnn-img",
+    "host": "lab02-System-Product-Name",
+    "username": "khanhsv",
+    "executable": "/home/khanhsv/miniconda3/envs/FL/bin/python",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2830.925416666667,
+        "min": 800.0,
+        "max": 4716.666666666667
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 841.725,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4900.049,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4921.397,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4548.008,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 1386.093,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.23,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 984.833,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4900.0,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 4841.322,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 2581.163,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4717.606,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 801.223,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3700.024,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3699.487,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3704.749,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3699.962,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3700.725,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3699.832,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3675.909,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3631.779,
+            "min": 800.0,
+            "max": 3900.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.3232879638672,
+            "used": 822.4102554321289
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 94.10883712768555
+    }
+}
