@@ -1,0 +1,174 @@
+{
+    "os": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+    "python": "3.12.9",
+    "heartbeatAt": "2025-03-19T02:43:27.405000",
+    "startedAt": "2025-03-19T02:43:26.748743",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--app",
+        ".",
+        "--num-supernodes",
+        "50",
+        "--backend-config",
+        "{\"client-resources\": {\"num-cpus\": 4, \"num-gpus\": 0.25}}"
+    ],
+    "state": "running",
+    "program": "/home/khanhsv/miniconda3/envs/FL/bin/flower-simulation",
+    "codePathLocal": null,
+    "git": {
+        "remote": null,
+        "commit": null
+    },
+    "email": "22010449@st.phenikaa-uni.edu.vn",
+    "root": "/home/khanhsv/FL/FL",
+    "host": "lab02-System-Product-Name",
+    "username": "khanhsv",
+    "executable": "/home/khanhsv/miniconda3/envs/FL/bin/python",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2473.702333333333,
+        "min": 800.0,
+        "max": 4716.666666666667
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 814.261,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 798.72,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 799.427,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 1915.231,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 2033.333,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4002.967,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 1078.947,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 4002.697,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 2150.511,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 3977.899,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 989.842,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 4030.619,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3974.263,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 2064.311,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2530.573,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 1259.698,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 1178.965,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 799.416,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 795.744,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 801.64,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 3900.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.3232879638672,
+            "used": 822.3350372314453
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 94.10883712768555
+    }
+}
