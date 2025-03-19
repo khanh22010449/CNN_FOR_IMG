@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from flwr_datasets import FederatedDataset
-from flwr_datasets.partitioner import IidPartitioner
+from flwr_datasets.partitioner import IidPartitioner, DirichletPartitioner
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, ToTensor
 
@@ -96,10 +96,18 @@ def load_data(partition_id: int, num_partitions: int):
     # Only initialize `FederatedDataset` once
     global fds
     if fds is None:
-        partitioner = IidPartitioner(num_partitions=num_partitions)
+        partitioner = DirichletPartitioner(
+            num_partitions=num_partitions,
+            partition_by="label",
+            alpha=0.3,
+            seed=42,
+            min_partition_size=50,
+        )
+
         fds = FederatedDataset(
             dataset="uoft-cs/cifar10",
             partitioners={"train": partitioner},
+
         )
     partition = fds.load_partition(partition_id)
     # Divide data on each node: 80% train, 20% test
@@ -149,8 +157,9 @@ def train(net, trainloader, epochs, device, lr=0.01):
 
 
 
+"""
 def test(net, testloader, device):
-    """Validate the model on the test set with detailed metrics."""
+    # Validate the model on the test set with detailed metrics.
     net.to(device)
     criterion = torch.nn.CrossEntropyLoss()
     net.eval()
@@ -193,6 +202,53 @@ def test(net, testloader, device):
             print(f'Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%')
     
     return avg_loss, accuracy
+"""
+
+def test(net, testloader, device):
+    """Validate the model on the test set with detailed metrics."""
+    net.to(device)
+    criterion = torch.nn.CrossEntropyLoss()
+    net.eval()
+    
+    test_loss = 0.0
+    correct = 0
+    total = 0
+    class_correct = [0] * 10
+    class_total = [0] * 10
+    
+    with torch.no_grad():
+        for batch in testloader:
+            images = batch["img"].to(device)
+            labels = batch["label"].to(device)
+            
+            outputs = net(images)
+            loss = criterion(outputs, labels)
+            
+            test_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += labels.size(0)
+            correct += predicted.eq(labels).sum().item()
+            
+            # Per-class accuracy - fixed to handle single-sample batches
+            c = (predicted == labels)  # Don't squeeze
+            for i in range(len(labels)):
+                label = labels[i].item()  # Convert tensor to Python number
+                class_correct[label] += c[i].item()
+                class_total[label] += 1
+    
+    # Calculate overall metrics
+    avg_loss = test_loss / len(testloader)
+    accuracy = correct / total
+    
+    print(f'Test Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}')
+    
+    # Print per-class accuracy
+    for i in range(10):
+        if class_total[i] > 0:
+            print(f'Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%')
+    
+    return avg_loss, accuracy
+
 
 def get_weights(net):
     return [val.cpu().numpy() for _, val in net.state_dict().items()]
