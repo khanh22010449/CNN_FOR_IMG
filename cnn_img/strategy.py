@@ -12,7 +12,7 @@ from flwr.common.typing import UserConfig
 from flwr.server.strategy import FedAvg, FedAdam, FedAdagrad, FedAvgM, FedProx
 
 
-PROJECT_NAME = "CNN for Cifar-10 - FedAvg"
+PROJECT_NAME = "CNN for Cifar-100 - FedAvg - DirichletPartitioner"
 
 
 class CustomFedAvg(FedAvg):

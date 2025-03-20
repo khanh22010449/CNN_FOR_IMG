@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 
 from datasets import load_dataset
 
+
 def gen_evaluate_fn(
     testloader: DataLoader,
     device: torch.device,
@@ -53,16 +54,19 @@ def server_fn(context: Context):
     num_rounds = context.run_config["num-server-rounds"]
     fraction_fit = context.run_config["fraction-fit"]
 
-    global_test_data = load_dataset("uoft-cs/cifar10")["test"]
+    global_test_data = load_dataset("uoft-cs/cifar100")["test"]
     transfrom = Compose(
         [ToTensor(), Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
     )
+
     def apply_transforms(batch):
         """Apply transforms to the partition from FederatedDataset."""
         batch["img"] = [transfrom(img) for img in batch["img"]]
         return batch
-    testloader = DataLoader(global_test_data.with_transform(apply_transforms)  ,batch_size=32)
 
+    testloader = DataLoader(
+        global_test_data.with_transform(apply_transforms), batch_size=32
+    )
 
     # Initialize model parameters
     ndarrays = get_weights(
@@ -84,7 +88,6 @@ def server_fn(context: Context):
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
-
     )
 
     config = ServerConfig(num_rounds=num_rounds)

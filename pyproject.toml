@@ -10,8 +10,8 @@ license = "Apache-2.0"
 dependencies = [
     "flwr[simulation]==1.13.0",
     "flwr-datasets[vision]==0.3.0",
-    "torch==2.2",
-    "torchvision==0.17.1",
+    "torch>=2.2.1",
+    "torchvision>=0.17.1",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -39,5 +39,5 @@ options.num-supernodes = 100
 
 [tool.flwr.federations.localhost-gpu]
 options.num-supernodes = 50
-options.backend.client-resources.num-cpus = 2 # each ClientApp assumes to use 4CPUs
+options.backend.client-resources.num-cpus = 4 # each ClientApp assumes to use 4CPUs
 options.backend.client-resources.num-gpus = 0.25 # at most 4 ClientApps will run in a given GPU
