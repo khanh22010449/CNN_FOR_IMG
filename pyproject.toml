@@ -26,9 +26,9 @@ clientapp = "cnn_img.client_app:app"
 
 [tool.flwr.app.config]
 num-server-rounds = 30
-fraction-fit = 0.5
+fraction-fit = 0.25
 local-epochs = 100
-server-device = "cuda:0"
+server-device = "cpu"
 use-wandb = true
 
 [tool.flwr.federations]
@@ -38,6 +38,6 @@ default = "local-simulation"
 options.num-supernodes = 100
 
 [tool.flwr.federations.localhost-gpu]
-options.num-supernodes = 50
+options.num-supernodes = 100
 options.backend.client-resources.num-cpus = 4 # each ClientApp assumes to use 4CPUs
-options.backend.client-resources.num-gpus = 0.25 # at most 4 ClientApps will run in a given GPU
+options.backend.client-resources.num-gpus = 0.5 # at most 4 ClientApps will run in a given GPU

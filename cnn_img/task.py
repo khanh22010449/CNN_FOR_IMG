@@ -6,10 +6,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from flwr_datasets import FederatedDataset
-from flwr_datasets.partitioner import IidPartitioner, DirichletPartitioner
+from flwr_datasets.partitioner import IidPartitioner, DirichletPartitioner, ShardPartitioner
 from torch.utils.data import DataLoader
 from torchvision.transforms import (
     Compose,
+    Resize,
     Normalize,
     ToTensor,
     RandomCrop,
@@ -47,7 +48,7 @@ class Net(nn.Module):
 
         self.pool = nn.MaxPool2d(2, 2)
         self.dropout1 = nn.Dropout(0.25)
-        self.dropout2 = nn.Dropout(0.5)
+        self.dropout2 = nn.Dropout(0.5)ShardPartitioner
 
         # Fully connected layers
         self.fc1 = nn.Linear(512 * 2 * 2, 1024)
@@ -67,7 +68,7 @@ class Net(nn.Module):
         # Block 4
         x = self.pool(F.relu(self.bn4(self.conv4(x))))
         x = self.dropout1(x)
-
+Resize
         # Flatten and fully connected layers
         x = x.view(-1, 512 * 2 * 2)
         x = F.relu(self.fc1(x))
@@ -108,7 +109,7 @@ class Net(nn.Module):
 
         # Fully connected layers
         self.fc1 = nn.Linear(512, 256)
-        self.fc2 = nn.Linear(256, 20)
+        self.fc2 = nn.Linear(256, 8)
 
     def forward(self, x):
         # Block 1
@@ -149,16 +150,22 @@ def load_data(partition_id: int, num_partitions: int):
     """Load partition CIFAR100 data with augmentation."""
     global fds
     if fds is None:
-        partitioner = DirichletPartitioner(
-            num_partitions=num_partitions,
-            partition_by="coarse_label",
-            alpha=0.3,
-            seed=42,
-            min_partition_size=50,
-        )
+        # partitioner = DirichletPartitioner(
+        #     num_partitions=num_partitions,
+        #     partition_by="coarse_label",
+        #     alpha=0.3,
+        #     seed=42,
+        #     min_partition_size=50,
+        # )
+
+        # partitioner = ShardPartitioner(
+        #     num_partitions=num_partitions, partition_by="label", num_shards_per_partition=6
+        # )
+
+        partitioner = IidPartitioner(partition_id, num_partitions)
 
         fds = FederatedDataset(
-            dataset="uoft-cs/cifar100",
+            dataset="sarath2003/BreakHis",
             partitioners={"train": partitioner},
         )
     partition = fds.load_partition(partition_id)
@@ -166,7 +173,7 @@ def load_data(partition_id: int, num_partitions: int):
 
     # Tăng cường dữ liệu cho tập huấn luyện
     train_transforms = Compose(
-        [
+        [   Resize((400, 700)),
             ToTensor(),
             # Thêm các phép biến đổi để tăng cường dữ liệu
             RandomCrop(32, padding=4),
@@ -180,15 +187,15 @@ def load_data(partition_id: int, num_partitions: int):
 
     # Biến đổi cho tập kiểm tra
     test_transforms = Compose(
-        [ToTensor(), Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))]
+        [Resize((400, 700)),ToTensor(), Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))]
     )
 
     def apply_train_transforms(batch):
-        batch["img"] = [train_transforms(img) for img in batch["img"]]
+        batch["image"] = [train_transforms(img) for img in batch["image"]]
         return batch
 
     def apply_test_transforms(batch):
-        batch["img"] = [test_transforms(img) for img in batch["img"]]
+        batch["image"] = [test_transforms(img) for img in batch["image"]]
         return batch
 
     train_data = partition_train_test["train"].with_transform(apply_train_transforms)
@@ -213,8 +220,8 @@ def train(net, trainloader, epochs, device, lr=0.01):
         # print(f"Epoch{_}")
         epoch_loss = 0.0
         for batch in trainloader:
-            images = batch["img"]
-            labels = batch["coarse_label"]
+            images = batch["image"]
+            labels = batch["label"]
             optimizer.zero_grad()
             outputs = net(images.to(device))
             loss = criterion(outputs, labels.to(device))
@@ -287,13 +294,13 @@ def test(net, testloader, device):
     test_loss = 0.0
     correct = 0
     total = 0
-    class_correct = [0] * 20
-    class_total = [0] * 20
+    class_correct = [0] * 8
+    class_total = [0] * 8
 
     with torch.no_grad():
         for batch in testloader:
-            images = batch["img"].to(device)
-            labels = batch["coarse_label"].to(device)
+            images = batch["image"].to(device)
+            labels = batch["label"].to(device)
 
             outputs = net(images)
             loss = criterion(outputs, labels)
@@ -317,7 +324,7 @@ def test(net, testloader, device):
     print(f"Test Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}")
 
     # Print per-class accuracy
-    for i in range(20):
+    for i in range(8):
         if class_total[i] > 0:
             print(
                 f"Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%"

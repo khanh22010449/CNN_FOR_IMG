@@ -4,7 +4,7 @@ from flwr.server.strategy import FedAdagrad, FedAdam, FedAvg
 from typing import List, Tuple
 
 
-from torchvision.transforms import Compose, Normalize, ToTensor
+from torchvision.transforms import Compose, Normalize, ToTensor,Resize
 
 from cnn_img.task import Net, get_weights, set_weights, test
 from cnn_img.strategy import CustomFedAvg
@@ -54,18 +54,20 @@ def server_fn(context: Context):
     num_rounds = context.run_config["num-server-rounds"]
     fraction_fit = context.run_config["fraction-fit"]
 
-    global_test_data = load_dataset("uoft-cs/cifar100")["test"]
+    global_test_data = load_dataset("sarath2003/BreakHis")
     transfrom = Compose(
-        [ToTensor(), Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
+        [Resize((400, 700)),ToTensor(), Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
     )
 
     def apply_transforms(batch):
         """Apply transforms to the partition from FederatedDataset."""
-        batch["img"] = [transfrom(img) for img in batch["img"]]
+        batch["image"] = [transfrom(img) for img in batch["image"]]
         return batch
+    
+    train_test_split = global_test_data["train"].train_test_split(test_size=0.2, seed=42)
 
     testloader = DataLoader(
-        global_test_data.with_transform(apply_transforms), batch_size=32
+        train_test_split["test"].with_transform(apply_transforms), batch_size=32
     )
 
     # Initialize model parameters
@@ -79,15 +81,17 @@ def server_fn(context: Context):
         run_config=context.run_config,
         use_wandb=context.run_config["use-wandb"],
         fraction_fit=fraction_fit,
-        fraction_evaluate=0.5,
-        min_available_clients=2,
+        fraction_evaluate=0.25,
+        min_available_clients=5,
         initial_parameters=parameters,
-        # proximal_mu=0.1,
+        # proximal_mu=0.3,
         on_fit_config_fn=on_fit_config,
         evaluate_fn=gen_evaluate_fn(
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
+        # eta = 0.015,
+        # eta_l = 0.03,
     )
 
     config = ServerConfig(num_rounds=num_rounds)
