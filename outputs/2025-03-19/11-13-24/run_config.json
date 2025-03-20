@@ -1,1 +1,0 @@
-{"num-server-rounds": 50, "fraction-fit": 0.5, "local-epochs": 100, "server-device": "cuda:0", "use-wandb": true}

@@ -1,1 +1,0 @@
-{"centralized_evaluate": [{"round": 0, "centralized_loss": 2.302492197329244, "centralized_accuracy": 0.1059}, {"round": 1, "centralized_loss": 2.302492197329244, "centralized_accuracy": 0.1059}, {"round": 2, "centralized_loss": 2.302492197329244, "centralized_accuracy": 0.1059}], "federated_evaluate": [{"round": 1, "federated_evaluate_loss": null}]}

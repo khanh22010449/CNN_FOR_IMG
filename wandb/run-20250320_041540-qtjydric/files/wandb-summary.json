@@ -1,1 +1,0 @@
-{"centralized_loss": 2.9929594620348166, "centralized_accuracy": 0.1009, "_timestamp": 1742419187.131478, "_runtime": 247.02276301383972, "_step": 30, "federated_evaluate_loss": null, "_wandb": {"runtime": 249}}
