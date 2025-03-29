@@ -158,11 +158,11 @@ def load_data(partition_id: int, num_partitions: int):
         #     min_partition_size=50,
         # )
 
-        # partitioner = ShardPartitioner(
-        #     num_partitions=num_partitions, partition_by="label", num_shards_per_partition=6
-        # )
+        partitioner = ShardPartitioner(
+            num_partitions=num_partitions, partition_by="label", num_shards_per_partition=6
+        )
 
-        partitioner = IidPartitioner(partition_id, num_partitions)
+        # partitioner = IidPartitioner(partition_id, num_partitions)
 
         fds = FederatedDataset(
             dataset="sarath2003/BreakHis",
@@ -173,7 +173,7 @@ def load_data(partition_id: int, num_partitions: int):
 
     # Tăng cường dữ liệu cho tập huấn luyện
     train_transforms = Compose(
-        [   Resize((400, 700)),
+        [   Resize((64, 120)),
             ToTensor(),
             # Thêm các phép biến đổi để tăng cường dữ liệu
             RandomCrop(32, padding=4),
@@ -187,7 +187,7 @@ def load_data(partition_id: int, num_partitions: int):
 
     # Biến đổi cho tập kiểm tra
     test_transforms = Compose(
-        [Resize((400, 700)),ToTensor(), Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))]
+        [Resize((64, 120)),ToTensor(), Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))]
     )
 
     def apply_train_transforms(batch):
