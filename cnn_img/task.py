@@ -109,7 +109,11 @@ class Net(nn.Module):
 
         # Fully connected layers
         self.fc1 = nn.Linear(512, 256)
+<<<<<<< HEAD
         self.fc2 = nn.Linear(256, 8)
+=======
+        self.fc2 = nn.Linear(256, 10)
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
 
     def forward(self, x):
         # Block 1
@@ -157,15 +161,23 @@ def load_data(partition_id: int, num_partitions: int):
         #     seed=42,
         #     min_partition_size=50,
         # )
+<<<<<<< HEAD
 
         partitioner = ShardPartitioner(
             num_partitions=num_partitions, partition_by="label", num_shards_per_partition=6
         )
+=======
+        partitioner = IidPartitioner(num_partitions=num_partitions)
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
 
         # partitioner = IidPartitioner(partition_id, num_partitions)
 
         fds = FederatedDataset(
+<<<<<<< HEAD
             dataset="sarath2003/BreakHis",
+=======
+            dataset="uoft-cs/cifar10",
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
             partitioners={"train": partitioner},
         )
     partition = fds.load_partition(partition_id)
@@ -220,7 +232,11 @@ def train(net, trainloader, epochs, device, lr=0.01):
         # print(f"Epoch{_}")
         epoch_loss = 0.0
         for batch in trainloader:
+<<<<<<< HEAD
             images = batch["image"]
+=======
+            images = batch["img"]
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
             labels = batch["label"]
             optimizer.zero_grad()
             outputs = net(images.to(device))
@@ -294,12 +310,21 @@ def test(net, testloader, device):
     test_loss = 0.0
     correct = 0
     total = 0
+<<<<<<< HEAD
     class_correct = [0] * 8
     class_total = [0] * 8
 
     with torch.no_grad():
         for batch in testloader:
             images = batch["image"].to(device)
+=======
+    class_correct = [0] * 10
+    class_total = [0] * 10
+
+    with torch.no_grad():
+        for batch in testloader:
+            images = batch["img"].to(device)
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
             labels = batch["label"].to(device)
 
             outputs = net(images)
@@ -324,7 +349,11 @@ def test(net, testloader, device):
     print(f"Test Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}")
 
     # Print per-class accuracy
+<<<<<<< HEAD
     for i in range(8):
+=======
+    for i in range(10):
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
         if class_total[i] > 0:
             print(
                 f"Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%"

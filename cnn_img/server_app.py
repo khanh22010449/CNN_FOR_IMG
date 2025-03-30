@@ -54,7 +54,11 @@ def server_fn(context: Context):
     num_rounds = context.run_config["num-server-rounds"]
     fraction_fit = context.run_config["fraction-fit"]
 
+<<<<<<< HEAD
     global_test_data = load_dataset("sarath2003/BreakHis")
+=======
+    global_test_data = load_dataset("uoft-cs/cifar10")["test"]
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
     transfrom = Compose(
         [Resize((400, 700)),ToTensor(), Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
     )
@@ -90,8 +94,13 @@ def server_fn(context: Context):
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
+<<<<<<< HEAD
         # eta = 0.015,
         # eta_l = 0.03,
+=======
+        eta=0.15,
+        eta_l=0.01,
+>>>>>>> fbf5f0b (update included remove folder wandb and outputs)
     )
 
     config = ServerConfig(num_rounds=num_rounds)
