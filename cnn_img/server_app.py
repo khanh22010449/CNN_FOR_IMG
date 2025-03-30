@@ -4,7 +4,7 @@ from flwr.server.strategy import FedAdagrad, FedAdam, FedAvg
 from typing import List, Tuple
 
 
-from torchvision.transforms import Compose, Normalize, ToTensor,Resize
+from torchvision.transforms import Compose, Normalize, ToTensor, Resize
 
 from cnn_img.task import Net, get_weights, set_weights, test
 from cnn_img.strategy import CustomFedAvg
@@ -54,24 +54,27 @@ def server_fn(context: Context):
     num_rounds = context.run_config["num-server-rounds"]
     fraction_fit = context.run_config["fraction-fit"]
 
-<<<<<<< HEAD
-    global_test_data = load_dataset("sarath2003/BreakHis")
-=======
     global_test_data = load_dataset("uoft-cs/cifar10")["test"]
->>>>>>> fbf5f0b (update included remove folder wandb and outputs)
+    print(global_test_data)
     transfrom = Compose(
-        [Resize((400, 700)),ToTensor(), Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
+        [
+            # Resize((400, 700)),
+            ToTensor(),
+            Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ]
     )
 
     def apply_transforms(batch):
         """Apply transforms to the partition from FederatedDataset."""
-        batch["image"] = [transfrom(img) for img in batch["image"]]
+        batch["img"] = [transfrom(img) for img in batch["img"]]
         return batch
-    
-    train_test_split = global_test_data["train"].train_test_split(test_size=0.2, seed=42)
+
+    # train_test_split = global_test_data["train"].train_test_split(
+    #     test_size=0.2, seed=42
+    # )
 
     testloader = DataLoader(
-        train_test_split["test"].with_transform(apply_transforms), batch_size=32
+        global_test_data.with_transform(apply_transforms), batch_size=32
     )
 
     # Initialize model parameters
@@ -94,13 +97,8 @@ def server_fn(context: Context):
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
-<<<<<<< HEAD
-        # eta = 0.015,
-        # eta_l = 0.03,
-=======
         eta=0.15,
         eta_l=0.01,
->>>>>>> fbf5f0b (update included remove folder wandb and outputs)
     )
 
     config = ServerConfig(num_rounds=num_rounds)
