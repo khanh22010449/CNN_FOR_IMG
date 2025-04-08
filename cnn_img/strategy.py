@@ -12,10 +12,10 @@ from flwr.common.typing import UserConfig
 from flwr.server.strategy import FedAvg, FedAdam, FedAdagrad, FedAvgM, FedProx
 
 
-PROJECT_NAME = "CNN for Cifar-10 - FedAdam - IidPartitioner"
+PROJECT_NAME = "CNN for Cifar-100 - FedAvg - DirichletPartitioner"
 
 
-class CustomFedAvg(FedAdam):
+class CustomFedAvg(FedAvg):
     """A class that behaves like FedAvg but has extra functionality.
 
     This strategy: (1) saves results to the filesystem, (2) saves a

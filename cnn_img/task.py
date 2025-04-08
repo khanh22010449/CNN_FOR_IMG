@@ -29,59 +29,6 @@ import json
 
 from tqdm import tqdm
 
-"""
-# Cifar-10
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        # First convolutional block
-        self.conv1 = nn.Conv2d(3, 64, 3, padding=1)
-        self.bn1 = nn.BatchNorm2d(64)
-
-        # Second convolutional block
-        self.conv2 = nn.Conv2d(64, 128, 3, padding=1)
-        self.bn2 = nn.BatchNorm2d(128)
-
-        # Third convolutional block
-        self.conv3 = nn.Conv2d(128, 256, 3, padding=1)
-        self.bn3 = nn.BatchNorm2d(256)
-
-        # Fourth convolutional block
-        self.conv4 = nn.Conv2d(256, 512, 3, padding=1)
-        self.bn4 = nn.BatchNorm2d(512)
-
-        self.pool = nn.MaxPool2d(2, 2)
-        self.dropout1 = nn.Dropout(0.25)
-        self.dropout2 = nn.Dropout(0.5)ShardPartitioner
-
-        # Fully connected layers
-        self.fc1 = nn.Linear(512 * 2 * 2, 1024)
-        self.fc2 = nn.Linear(1024, 20)
-
-    def forward(self, x):
-        # Block 1
-        x = self.pool(F.relu(self.bn1(self.conv1(x))))
-
-        # Block 2
-        x = self.pool(F.relu(self.bn2(self.conv2(x))))
-
-        # Block 3
-        x = self.pool(F.relu(self.bn3(self.conv3(x))))
-        x = self.dropout1(x)
-
-        # Block 4
-        x = self.pool(F.relu(self.bn4(self.conv4(x))))
-        x = self.dropout1(x)
-Resize
-        # Flatten and fully connected layers
-        x = x.view(-1, 512 * 2 * 2)
-        x = F.relu(self.fc1(x))
-        x = self.dropout2(x)
-        x = self.fc2(x)
-
-        return x
-"""
-
 
 # Cifar-100
 class Net(nn.Module):
@@ -113,7 +60,7 @@ class Net(nn.Module):
 
         # Fully connected layers
         self.fc1 = nn.Linear(512, 256)
-        self.fc2 = nn.Linear(256, 10)
+        self.fc2 = nn.Linear(256, 20)
 
     def forward(self, x):
         # Block 1
@@ -154,19 +101,19 @@ def load_data(partition_id: int, num_partitions: int):
     """Load partition CIFAR100 data with augmentation."""
     global fds
     if fds is None:
-        # partitioner = DirichletPartitioner(
-        #     num_partitions=num_partitions,
-        #     partition_by="coarse_label",
-        #     alpha=0.3,
-        #     seed=42,
-        #     min_partition_size=50,
-        # )
-        partitioner = IidPartitioner(num_partitions=num_partitions)
+        partitioner = DirichletPartitioner(
+            num_partitions=num_partitions,
+            partition_by="coarse_label",
+            alpha=0.3,
+            seed=42,
+            min_partition_size=10,
+        )
+        # partitioner = IidPartitioner(num_partitions=num_partitions)
 
         # partitioner = IidPartitioner(partition_id, num_partitions)
 
         fds = FederatedDataset(
-            dataset="uoft-cs/cifar10",
+            dataset="uoft-cs/cifar100",
             partitioners={"train": partitioner},
         )
     partition = fds.load_partition(partition_id)
@@ -227,7 +174,7 @@ def train(net, trainloader, epochs, device, lr=0.01):
         epoch_loss = 0.0
         for batch in trainloader:
             images = batch["img"]
-            labels = batch["label"]
+            labels = batch["coarse_label"]
             optimizer.zero_grad()
             outputs = net(images.to(device))
             loss = criterion(outputs, labels.to(device))
@@ -243,54 +190,6 @@ def train(net, trainloader, epochs, device, lr=0.01):
     return avg_trainloss
 
 
-"""
-def test(net, testloader, device):
-    # Validate the model on the test set with detailed metrics.
-    net.to(device)
-    criterion = torch.nn.CrossEntropyLoss()
-    net.eval()
-    
-    test_loss = 0.0
-    correct = 0
-    total = 0
-    class_correct = [0] * 10
-    class_total = [0] * 10
-    
-    with torch.no_grad():
-        for batch in testloader:
-            images = batch["img"].to(device)
-            labels = batch["label"].to(device)
-            
-            outputs = net(images)
-            loss = criterion(outputs, labels)
-            
-            test_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += labels.size(0)
-            correct += predicted.eq(labels).sum().item()
-            
-            # Per-class accuracy
-            c = (predicted == labels).squeeze()
-            for i in range(len(labels)):
-                label = labels[i]
-                class_correct[label] += c[i].item()
-                class_total[label] += 1
-    
-    # Calculate overall metrics
-    avg_loss = test_loss / len(testloader)
-    accuracy = correct / total
-    
-    print(f'Test Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}')
-    
-    # Print per-class accuracy
-    for i in range(10):
-        if class_total[i] > 0:
-            print(f'Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%')
-    
-    return avg_loss, accuracy
-"""
-
-
 def test(net, testloader, device):
     """Validate the model on the test set with detailed metrics."""
     net.to(device)
@@ -300,19 +199,19 @@ def test(net, testloader, device):
     test_loss = 0.0
     correct = 0
     total = 0
-    class_correct = [0] * 10
-    class_total = [0] * 10
+    class_correct = [0] * 20
+    class_total = [0] * 20
 
     with torch.no_grad():
         for batch in testloader:
             images = batch["img"].to(device)
-    class_correct = [0] * 10
-    class_total = [0] * 10
+    class_correct = [0] * 20
+    class_total = [0] * 20
 
     with torch.no_grad():
         for batch in testloader:
             images = batch["img"].to(device)
-            labels = batch["label"].to(device)
+            labels = batch["coarse_label"].to(device)
 
             outputs = net(images)
             loss = criterion(outputs, labels)
@@ -336,7 +235,7 @@ def test(net, testloader, device):
     print(f"Test Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}")
 
     # Print per-class accuracy
-    for i in range(10):
+    for i in range(20):
         if class_total[i] > 0:
             print(
                 f"Accuracy of class {i}: {100 * class_correct[i] / class_total[i]:.2f}%"

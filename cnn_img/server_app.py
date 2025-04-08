@@ -54,7 +54,7 @@ def server_fn(context: Context):
     num_rounds = context.run_config["num-server-rounds"]
     fraction_fit = context.run_config["fraction-fit"]
 
-    global_test_data = load_dataset("uoft-cs/cifar10")["test"]
+    global_test_data = load_dataset("uoft-cs/cifar100")["test"]
     print(global_test_data)
     transfrom = Compose(
         [
@@ -97,8 +97,8 @@ def server_fn(context: Context):
             testloader, device=context.run_config["server-device"]
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
-        eta=0.15,
-        eta_l=0.01,
+        # eta=0.15,
+        # eta_l=0.01,
     )
 
     config = ServerConfig(num_rounds=num_rounds)
