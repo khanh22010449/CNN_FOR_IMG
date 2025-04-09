@@ -160,8 +160,8 @@ def load_data(partition_id: int, num_partitions: int):
 def train(net, trainloader, epochs, device, lr=0.01):
     net.to(device)
     criterion = torch.nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.Adam(
-        net.parameters(), lr=lr, weight_decay=5e-4  # momentum=0.9,
+    optimizer = torch.optim.SGD(
+        net.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4  #
     )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
