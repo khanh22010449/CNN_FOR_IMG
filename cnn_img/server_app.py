@@ -89,9 +89,9 @@ def server_fn(context: Context):
         use_wandb=context.run_config["use-wandb"],
         fraction_fit=fraction_fit,
         fraction_evaluate=0.25,
-        min_available_clients=5,
+        min_available_clients=2,
         initial_parameters=parameters,
-        # proximal_mu=0.3,
+        proximal_mu=0.3,
         on_fit_config_fn=on_fit_config,
         evaluate_fn=gen_evaluate_fn(
             testloader, device=context.run_config["server-device"]

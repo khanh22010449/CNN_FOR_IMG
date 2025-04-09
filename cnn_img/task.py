@@ -106,7 +106,7 @@ def load_data(partition_id: int, num_partitions: int):
             partition_by="coarse_label",
             alpha=0.3,
             seed=42,
-            min_partition_size=10,
+            min_partition_size=50,
         )
         # partitioner = IidPartitioner(num_partitions=num_partitions)
 
@@ -122,7 +122,6 @@ def load_data(partition_id: int, num_partitions: int):
     # Tăng cường dữ liệu cho tập huấn luyện
     train_transforms = Compose(
         [
-            Resize((64, 120)),
             ToTensor(),
             # Thêm các phép biến đổi để tăng cường dữ liệu
             RandomCrop(32, padding=4),
@@ -137,7 +136,6 @@ def load_data(partition_id: int, num_partitions: int):
     # Biến đổi cho tập kiểm tra
     test_transforms = Compose(
         [
-            Resize((64, 120)),
             ToTensor(),
             Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
         ]
@@ -162,8 +160,8 @@ def load_data(partition_id: int, num_partitions: int):
 def train(net, trainloader, epochs, device, lr=0.01):
     net.to(device)
     criterion = torch.nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(
-        net.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4
+    optimizer = torch.optim.Adam(
+        net.parameters(), lr=lr, weight_decay=5e-4  # momentum=0.9,
     )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
